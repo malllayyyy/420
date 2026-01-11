@@ -15,6 +15,7 @@ public class Player extends Entity {
 	public BufferedImage[] walkDown; // Array to hold the 4 frames
 	public int spriteCounter = 0;
 	public int spriteNum = 0;
+	boolean isMoving = false;
 
 	public Player(GamePanel gp, KeyHandler keyH) {
 
@@ -53,7 +54,9 @@ public class Player extends Entity {
 
 		// Only animate if a key is being pressed
 	    if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
-	        
+	    	
+	        isMoving = true;
+	    	
 	        if (keyH.upPressed) { direction = "down"; y -= speed; }
 	        if (keyH.downPressed) { direction = "down"; y += speed; }
 	        if (keyH.leftPressed) { direction = "down"; x -= speed; }
@@ -65,20 +68,28 @@ public class Player extends Entity {
 	            spriteNum = (spriteNum + 1) % 4; // Cycle 0, 1, 2, 3
 	            spriteCounter = 0;
 	        }
+	    }else {
+	    	isMoving = false;
 	    }
 	}
 
 	public void draw(Graphics2D g2) {
 	    BufferedImage image = null;
+	    BufferedImage ideal = walkDown[0];
+	    
+	    if(isMoving == true) {
+	    	// Use the array and the spriteNum to pick the current frame
+		    if (direction.equals("down")) {
+		        image = walkDown[spriteNum];
+		    }
+		    // (Add other directions here later)
 
-	    // Use the array and the spriteNum to pick the current frame
-	    if (direction.equals("down")) {
-	        image = walkDown[spriteNum];
+		    if (image != null) {
+		        g2.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
+		    }
+	    }else {
+	    	g2.drawImage(ideal, x, y, gp.tileSize, gp.tileSize, null);
 	    }
-	    // (Add other directions here later)
-
-	    if (image != null) {
-	        g2.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
-	    }
+	    
 	}
 }
